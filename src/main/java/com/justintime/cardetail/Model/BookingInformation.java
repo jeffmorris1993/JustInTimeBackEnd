@@ -13,4 +13,5 @@ public class BookingInformation {
     private Customer customer;
     private Timestamp dateOfService;
     private Vehicle vehicle;
+
 }
