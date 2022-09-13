@@ -6,9 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import java.util.UUID;
+import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
@@ -21,6 +20,9 @@ public class CreateBookingService {
 
     public UUID run(BookingInformation bookingInformation){
         logger.info("Starting to create a booking");
+        if (bookingInformation.getBookingNumber() != null){
+            logger.info("Upserting");
+        }
         return bookingService.createBooking(bookingInformation);
     }
 }

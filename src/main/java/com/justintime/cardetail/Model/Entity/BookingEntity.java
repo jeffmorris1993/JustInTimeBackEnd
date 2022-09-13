@@ -24,16 +24,16 @@ public class BookingEntity {
     @Id
     @GenericGenerator(name = "generator", strategy ="uuid2")
     @GeneratedValue(generator = "generator")
-    @Type(type = "uuid-char")
+    @Type(type="pg-uuid")
     @Column(columnDefinition = "uniqueidentifier")
     private UUID bookingNumber;
 
-    @ManyToOne()
-    @JoinColumn(name = "fk_customer", referencedColumnName = "customer_id")
+    @ManyToOne
+    @JoinColumn(name = "customerId")
     private CustomerEntity customer;
 
-    @ManyToOne()
-    @JoinColumn(name = "fk_vehicle", referencedColumnName = "vehicle_id")
+    @ManyToOne
+    @JoinColumn(name = "vehicleId")
     private VehicleEntity vehicle;
 
     private Timestamp dateOfService;

@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -24,12 +25,12 @@ public class VehicleEntity {
     @Id
     @GenericGenerator(name = "generator", strategy ="uuid2")
     @GeneratedValue(generator = "generator")
-    @Type(type = "uuid-char")
+    @Type(type="pg-uuid")
     @Column(columnDefinition = "uniqueidentifier")
     private UUID vehicleId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_customer", referencedColumnName = "customer_id", nullable = false)
+    @JoinColumn(name = "customerId", nullable = false)
     private CustomerEntity customerEntity;
 
     private int serviceTypeId;
@@ -39,6 +40,9 @@ public class VehicleEntity {
     private String model;
 
     private int year;
+
+    @OneToMany(mappedBy="vehicle")
+    List<BookingEntity> bookings;
 
     @CreationTimestamp
     private Timestamp createdAt;

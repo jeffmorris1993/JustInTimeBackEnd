@@ -17,7 +17,7 @@ public class BookingController {
     private final CreateBookingService createBookingService;
 
     @PostMapping("/booking")
-    public ResponseEntity<UUID> createBooking(@RequestBody BookingInformation bookingInformation){
+    public ResponseEntity<UUID> upsertBooking(@RequestBody BookingInformation bookingInformation){
         return ResponseEntity.ok(createBookingService.run(bookingInformation));
     }
 

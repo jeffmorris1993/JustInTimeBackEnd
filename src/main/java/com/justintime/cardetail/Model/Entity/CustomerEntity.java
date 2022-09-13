@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -24,7 +25,7 @@ public class CustomerEntity {
     @Id
     @GenericGenerator(name = "generator", strategy ="uuid2")
     @GeneratedValue(generator = "generator")
-    @Type(type = "uuid-char")
+    @Type(type="pg-uuid")
     @Column(columnDefinition = "uniqueidentifier")
     private UUID customerId;
 
@@ -39,6 +40,9 @@ public class CustomerEntity {
     private String city;
 
     private String zip;
+
+    @OneToMany(mappedBy="customer")
+    List<BookingEntity> bookings;
 
     @CreationTimestamp
     private Timestamp createdAt;

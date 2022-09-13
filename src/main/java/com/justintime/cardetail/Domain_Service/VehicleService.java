@@ -15,6 +15,6 @@ public class VehicleService {
 
     public VehicleEntity createVehicle(Vehicle vehicle, CustomerEntity customerEntity){
         return vehicleRepository.save(VehicleEntity.builder().make(vehicle.getMake()).year(vehicle.getYear())
-                .model(vehicle.getModel()).customerEntity(customerEntity).build());
+                .model(vehicle.getModel()).serviceTypeId(vehicle.getServiceType()).customerEntity(customerEntity).build());
     }
 }
