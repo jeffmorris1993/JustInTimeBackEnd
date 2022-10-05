@@ -1,5 +1,6 @@
 package com.justintime.cardetail.Model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.sql.Timestamp;
@@ -15,5 +16,6 @@ public class BookingInformation {
     private Customer customer;
     private Timestamp dateOfService;
     private Vehicle vehicle;
-
+    @JsonProperty
+    private boolean isSubmitted;
 }

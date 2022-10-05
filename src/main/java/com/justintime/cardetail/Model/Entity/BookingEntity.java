@@ -38,6 +38,8 @@ public class BookingEntity {
 
     private Timestamp dateOfService;
 
+    private boolean isSubmitted;
+
     @CreationTimestamp
     private Timestamp createdAt;
 

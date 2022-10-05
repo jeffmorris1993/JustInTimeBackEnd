@@ -41,6 +41,7 @@ public class BookingService {
                 .dateOfService(bookingInformation.getDateOfService())
                 .customer(customerEntity)
                 .vehicle(vehicleEntity)
+                .isSubmitted(bookingInformation.isSubmitted())
                 .build()
         );
         return newBooking.getBookingNumber();
@@ -51,6 +52,7 @@ public class BookingService {
         List<BookingEntity> bookingEntities = bookingRepository.findAll();
         return bookingEntities.stream().map(bookingEntity -> BookingResponse.builder()
                 .bookingNumber(bookingEntity.getBookingNumber())
+                .isSubmitted(bookingEntity.isSubmitted())
                 .customerId(bookingEntity.getCustomer().getCustomerId())
                 .firstName(bookingEntity.getCustomer().getFirstName())
                 .lastName(bookingEntity.getCustomer().getLastName())

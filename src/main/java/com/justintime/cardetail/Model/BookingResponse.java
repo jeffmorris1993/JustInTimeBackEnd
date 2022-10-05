@@ -11,6 +11,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class BookingResponse {
     private UUID bookingNumber;
+    private boolean isSubmitted;
     private UUID customerId;
     private String firstName;
     private String lastName;
