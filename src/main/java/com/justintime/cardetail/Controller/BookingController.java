@@ -1,7 +1,7 @@
 package com.justintime.cardetail.Controller;
 
-import com.justintime.cardetail.Application_Service.CreateBookingService;
 import com.justintime.cardetail.Application_Service.GetBookingService;
+import com.justintime.cardetail.Application_Service.UpsertBookingService;
 import com.justintime.cardetail.Model.BookingInformation;
 import com.justintime.cardetail.Model.BookingResponse;
 import lombok.AllArgsConstructor;
@@ -16,12 +16,12 @@ import java.util.UUID;
 @AllArgsConstructor
 public class BookingController {
 
-    private final CreateBookingService createBookingService;
+    private final UpsertBookingService upsertBookingService;
     private final GetBookingService getBookingService;
 
     @PostMapping("/booking")
     public ResponseEntity<UUID> upsertBooking(@RequestBody BookingInformation bookingInformation) {
-        return ResponseEntity.ok(createBookingService.run(bookingInformation));
+        return ResponseEntity.ok(upsertBookingService.run(bookingInformation));
     }
 
     @GetMapping("/booking")

@@ -12,17 +12,14 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class CreateBookingService {
+public class UpsertBookingService {
 
     private BookingService bookingService;
 
-    private static final Logger logger = LoggerFactory.getLogger(CreateBookingService.class);
+    private static final Logger logger = LoggerFactory.getLogger(UpsertBookingService.class);
 
     public UUID run(BookingInformation bookingInformation){
         logger.info("Starting to create a booking");
-        if (bookingInformation.getBookingNumber() != null){
-            logger.info("Upserting");
-        }
-        return bookingService.createBooking(bookingInformation);
+        return bookingService.upsertBooking(bookingInformation);
     }
 }

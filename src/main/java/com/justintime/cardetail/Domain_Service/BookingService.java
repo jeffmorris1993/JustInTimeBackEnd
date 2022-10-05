@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -23,16 +24,26 @@ public class BookingService {
     private final VehicleService vehicleService;
     private final BookingRepository bookingRepository;
 
-    public UUID createBooking(BookingInformation bookingInformation){
-        CustomerEntity customerEntity = customerService.createCustomer(bookingInformation.getCustomer());
-        VehicleEntity vehicleEntity = vehicleService.createVehicle(bookingInformation.getVehicle(), customerEntity);
-        BookingEntity bookingEntity = bookingRepository.save(BookingEntity.builder()
+    public UUID upsertBooking(BookingInformation bookingInformation) {
+        CustomerEntity customerEntity = bookingInformation.getCustomer().getCustomerId() != null ?
+                customerService.updateCustomer(bookingInformation.getCustomer()) :
+                customerService.createCustomer(bookingInformation.getCustomer());
+
+        VehicleEntity vehicleEntity = bookingInformation.getVehicle().getVehicleId() != null ?
+                vehicleService.updateVehicle(bookingInformation.getVehicle(), customerEntity) :
+                vehicleService.createVehicle(bookingInformation.getVehicle(), customerEntity);
+
+        Optional<BookingEntity> bookingEntity = bookingInformation.getBookingNumber() != null ?
+                bookingRepository.findById(bookingInformation.getBookingNumber()) : Optional.empty();
+        BookingEntity.BookingEntityBuilder bookingEntityBuilder = bookingEntity.map(BookingEntity::toBuilder)
+                .orElse(BookingEntity.builder());
+        BookingEntity newBooking = bookingRepository.save(bookingEntityBuilder
                 .dateOfService(bookingInformation.getDateOfService())
                 .customer(customerEntity)
                 .vehicle(vehicleEntity)
                 .build()
         );
-        return bookingEntity.getBookingNumber();
+        return newBooking.getBookingNumber();
     }
 
     @Transactional
@@ -40,6 +51,7 @@ public class BookingService {
         List<BookingEntity> bookingEntities = bookingRepository.findAll();
         return bookingEntities.stream().map(bookingEntity -> BookingResponse.builder()
                 .bookingNumber(bookingEntity.getBookingNumber())
+                .customerId(bookingEntity.getCustomer().getCustomerId())
                 .firstName(bookingEntity.getCustomer().getFirstName())
                 .lastName(bookingEntity.getCustomer().getLastName())
                 .email(bookingEntity.getCustomer().getEmail())
@@ -50,6 +62,7 @@ public class BookingService {
                 .serviceType(bookingEntity.getVehicle().getServiceTypeId())
                 .dateOfService(bookingEntity.getDateOfService() != null ?
                         new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(bookingEntity.getDateOfService()) : null)
+                .vehicleId(bookingEntity.getVehicle().getVehicleId())
                 .year(bookingEntity.getVehicle().getYear())
                 .make(bookingEntity.getVehicle().getMake())
                 .model(bookingEntity.getVehicle().getModel())

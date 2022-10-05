@@ -6,6 +6,8 @@ import com.justintime.cardetail.Repository.CustomerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 public class CustomerService {
@@ -22,5 +24,19 @@ public class CustomerService {
                 .city(customer.getCity())
                 .zip(customer.getZipCode())
                 .build());
+    }
+
+    public CustomerEntity updateCustomer(Customer customer){
+        Optional<CustomerEntity> customerEntity = customerRepository.findById(customer.getCustomerId());
+        return customerEntity.map(c -> customerRepository.save(c.toBuilder()
+                .firstName(customer.getFirstName())
+                .lastName(customer.getLastName())
+                .email(customer.getEmail())
+                .phone(customer.getPhone())
+                .streetAddress(customer.getStreetAddress())
+                .city(customer.getCity())
+                .zip(customer.getZipCode())
+                .build()
+        )).orElse(null);
     }
 }

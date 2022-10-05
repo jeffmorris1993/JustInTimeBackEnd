@@ -2,7 +2,6 @@ package com.justintime.cardetail.Model;
 
 import lombok.*;
 
-import java.sql.Timestamp;
 import java.util.UUID;
 
 @Getter
@@ -12,6 +11,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class BookingResponse {
     private UUID bookingNumber;
+    private UUID customerId;
     private String firstName;
     private String lastName;
     private String phone;
@@ -21,6 +21,7 @@ public class BookingResponse {
     private String zip;
     private int serviceType;
     private String dateOfService;
+    private UUID vehicleId;
     private int year;
     private String make;
     private String model;
