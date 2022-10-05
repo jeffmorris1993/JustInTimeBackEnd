@@ -35,6 +35,8 @@ public class CustomerEntity {
 
     private String email;
 
+    private String phone;
+
     private String streetAddress;
 
     private String city;

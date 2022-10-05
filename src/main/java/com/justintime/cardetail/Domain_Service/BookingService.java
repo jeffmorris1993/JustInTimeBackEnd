@@ -43,6 +43,7 @@ public class BookingService {
                 .firstName(bookingEntity.getCustomer().getFirstName())
                 .lastName(bookingEntity.getCustomer().getLastName())
                 .email(bookingEntity.getCustomer().getEmail())
+                .phone(bookingEntity.getCustomer().getPhone())
                 .address(bookingEntity.getCustomer().getStreetAddress())
                 .city(bookingEntity.getCustomer().getCity())
                 .zip(bookingEntity.getCustomer().getZip())

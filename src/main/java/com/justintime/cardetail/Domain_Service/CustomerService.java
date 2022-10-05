@@ -13,8 +13,14 @@ public class CustomerService {
     private CustomerRepository customerRepository;
 
     public CustomerEntity createCustomer(Customer customer){
-        return customerRepository.save(CustomerEntity.builder().firstName(customer.getFirstName())
-                .lastName(customer.getLastName()).email(customer.getEmail()).streetAddress(customer.getStreetAddress())
-                .city(customer.getCity()).zip(customer.getZipCode()).build());
+        return customerRepository.save(CustomerEntity.builder()
+                .firstName(customer.getFirstName())
+                .lastName(customer.getLastName())
+                .email(customer.getEmail())
+                .phone(customer.getPhone())
+                .streetAddress(customer.getStreetAddress())
+                .city(customer.getCity())
+                .zip(customer.getZipCode())
+                .build());
     }
 }
