@@ -15,4 +15,5 @@ public class Vehicle {
     private String model;
     private int year;
     private int serviceType;
+    private VehicleInspection vehicleInspection;
 }

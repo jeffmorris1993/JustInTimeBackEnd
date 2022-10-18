@@ -8,7 +8,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -19,38 +18,27 @@ import java.util.UUID;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-@Table(name = "vehicle")
-public class VehicleEntity {
+@Table(name = "vehicle_inspection")
+public class VehicleInspectionEntity {
 
     @Id
     @GenericGenerator(name = "generator", strategy ="uuid2")
     @GeneratedValue(generator = "generator")
     @Type(type="pg-uuid")
     @Column(columnDefinition = "uniqueidentifier")
-    private UUID vehicleId;
+    private UUID vehicleInspectionId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customerId", nullable = false)
-    private CustomerEntity customerEntity;
+    @JoinColumn(name = "vehicleId", nullable = false)
+    private VehicleEntity vehicle;
 
-    @OneToOne(mappedBy = "vehicle", cascade = CascadeType.ALL)
-    private VehicleInspectionEntity vehicleInspectionEntity;
+    private Integer inspectionTypeId;
 
-    private int serviceTypeId;
-
-    private String make;
-
-    private String model;
-
-    private int year;
-
-    @OneToMany(mappedBy="vehicle")
-    List<BookingEntity> bookings;
+    private String inspectionValueTypeId;
 
     @CreationTimestamp
     private Timestamp createdAt;
 
     @UpdateTimestamp
     private Timestamp updatedAt;
-
 }
