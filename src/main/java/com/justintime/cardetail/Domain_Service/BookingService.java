@@ -5,6 +5,7 @@ import com.justintime.cardetail.Model.BookingResponse;
 import com.justintime.cardetail.Model.Entity.BookingEntity;
 import com.justintime.cardetail.Model.Entity.CustomerEntity;
 import com.justintime.cardetail.Model.Entity.VehicleEntity;
+import com.justintime.cardetail.Model.Entity.VehicleInspectionEntity;
 import com.justintime.cardetail.Repository.BookingRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -68,6 +70,14 @@ public class BookingService {
                 .year(bookingEntity.getVehicle().getYear())
                 .make(bookingEntity.getVehicle().getMake())
                 .model(bookingEntity.getVehicle().getModel())
+                .exteriorInspection(bookingEntity.getVehicle().getVehicleInspectionEntity() != null ?
+                    bookingEntity.getVehicle().getVehicleInspectionEntity().stream().map(
+                            VehicleInspectionEntity::getExternalInspectionValueTypeId).filter(Objects::nonNull)
+                            .collect(Collectors.toList()) : null)
+                .interiorInspection(bookingEntity.getVehicle().getVehicleInspectionEntity() != null ?
+                        bookingEntity.getVehicle().getVehicleInspectionEntity().stream().map(
+                                VehicleInspectionEntity::getInternalInspectionValueTypeId).filter(Objects::nonNull)
+                                .collect(Collectors.toList()) : null)
                 .build()).collect(Collectors.toList());
     }
 }

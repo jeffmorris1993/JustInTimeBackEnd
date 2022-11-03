@@ -2,6 +2,7 @@ package com.justintime.cardetail.Model;
 
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -26,4 +27,6 @@ public class BookingResponse {
     private int year;
     private String make;
     private String model;
+    private List<String> exteriorInspection;
+    private List<String> interiorInspection;
 }
