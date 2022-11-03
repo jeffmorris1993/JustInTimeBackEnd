@@ -12,6 +12,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class VehicleInspection {
     private UUID vehicleInspectionId;
-    private List<Integer> exterior;
-    private List<Integer> interior;
+    private List<String> exterior;
+    private List<String> interior;
 }

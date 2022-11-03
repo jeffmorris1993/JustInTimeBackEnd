@@ -28,13 +28,13 @@ public class VehicleInspectionEntity {
     @Column(columnDefinition = "uniqueidentifier")
     private UUID vehicleInspectionId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicleId", nullable = false)
     private VehicleEntity vehicle;
 
-    private Integer inspectionTypeId;
+    private String externalInspectionValueTypeId;
 
-    private String inspectionValueTypeId;
+    private String internalInspectionValueTypeId;
 
     @CreationTimestamp
     private Timestamp createdAt;

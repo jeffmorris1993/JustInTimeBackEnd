@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,8 +34,8 @@ public class VehicleEntity {
     @JoinColumn(name = "customerId", nullable = false)
     private CustomerEntity customerEntity;
 
-    @OneToOne(mappedBy = "vehicle", cascade = CascadeType.ALL)
-    private VehicleInspectionEntity vehicleInspectionEntity;
+    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
+    private List<VehicleInspectionEntity> vehicleInspectionEntity;
 
     private int serviceTypeId;
 

@@ -9,8 +9,7 @@ import com.justintime.cardetail.Repository.VehicleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -18,32 +17,61 @@ public class VehicleService {
 
     private VehicleRepository vehicleRepository;
 
-    public VehicleEntity createVehicle(Vehicle vehicle, CustomerEntity customerEntity,
-                                       VehicleInspection vehicleInspection){
-        VehicleInspection inspection = null;
-        if (vehicleInspection != null) {
-            inspection = VehicleInspectionEntity.builder().inspectionValueTypeId(vehicleInspection.ge());
-        }
-        return vehicleRepository.save(VehicleEntity.builder()
+    public VehicleEntity createVehicle(Vehicle vehicle, CustomerEntity customerEntity){
+        VehicleEntity vehicleEntity = VehicleEntity.builder()
                 .make(vehicle.getMake())
                 .year(vehicle.getYear())
                 .model(vehicle.getModel())
                 .serviceTypeId(vehicle.getServiceType())
                 .customerEntity(customerEntity)
-                .vehicleInspectionEntity()
-                .build());
+                .build();
+        setInspection(vehicle.getVehicleInspection(), vehicleEntity);
+        return vehicleRepository.save(vehicleEntity);
     }
 
     public VehicleEntity updateVehicle(Vehicle vehicle, CustomerEntity customerEntity){
-        Optional<VehicleEntity> vehicleEntity = vehicleRepository.findById(vehicle.getVehicleId());
+        Optional<VehicleEntity> optionalVehicleEntity = vehicleRepository.findById(vehicle.getVehicleId());
 
-        return vehicleEntity.map(v -> vehicleRepository.save(v.toBuilder()
-                .make(vehicle.getMake())
-                .year(vehicle.getYear())
-                .model(vehicle.getModel())
-                .serviceTypeId(vehicle.getServiceType())
-                .customerEntity(customerEntity)
-                .build())
-        ).orElse(null);
+        return optionalVehicleEntity.map(vehicleEntity -> {
+            VehicleEntity updatedVehicleEntity = vehicleEntity.toBuilder()
+                    .make(vehicle.getMake())
+                    .year(vehicle.getYear())
+                    .model(vehicle.getModel())
+                    .serviceTypeId(vehicle.getServiceType())
+                    .customerEntity(customerEntity)
+                    .build();
+            setInspection(vehicle.getVehicleInspection(), updatedVehicleEntity);
+            return vehicleRepository.save(updatedVehicleEntity);
+        }).orElse(null);
+    }
+
+    private void setInspection(VehicleInspection vehicleInspection, VehicleEntity vehicleEntity) {
+        var vehicleInspectionEntities = new ArrayList<VehicleInspectionEntity>(Collections.emptyList());
+        if (vehicleInspection != null) {
+            Iterator<String> exteriorIterator = vehicleInspection.getExterior().iterator();
+            Iterator<String> interiorIterator = vehicleInspection.getInterior().iterator();
+            while (exteriorIterator.hasNext() && interiorIterator.hasNext()) {
+                vehicleInspectionEntities.add(VehicleInspectionEntity.builder()
+                        .externalInspectionValueTypeId(exteriorIterator.next())
+                        .internalInspectionValueTypeId(interiorIterator.next())
+                        .vehicle(vehicleEntity)
+                        .build());
+            }
+            while (exteriorIterator.hasNext()) {
+                vehicleInspectionEntities.add(VehicleInspectionEntity.builder()
+                        .externalInspectionValueTypeId(exteriorIterator.next())
+                        .internalInspectionValueTypeId(null)
+                        .vehicle(vehicleEntity)
+                        .build());
+            }
+            while (interiorIterator.hasNext()) {
+                vehicleInspectionEntities.add(VehicleInspectionEntity.builder()
+                        .externalInspectionValueTypeId(null)
+                        .internalInspectionValueTypeId(interiorIterator.next())
+                        .vehicle(vehicleEntity)
+                        .build());
+            }
+            vehicleEntity.setVehicleInspectionEntity(vehicleInspectionEntities);
+        }
     }
 }
