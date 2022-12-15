@@ -23,6 +23,7 @@ public class BookingResponse {
     private String zip;
     private int serviceType;
     private String dateOfService;
+    private List<String> addOns;
     private UUID vehicleId;
     private int year;
     private String make;

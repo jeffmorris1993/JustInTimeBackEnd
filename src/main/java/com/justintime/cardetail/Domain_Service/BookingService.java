@@ -2,10 +2,7 @@ package com.justintime.cardetail.Domain_Service;
 
 import com.justintime.cardetail.Model.BookingInformation;
 import com.justintime.cardetail.Model.BookingResponse;
-import com.justintime.cardetail.Model.Entity.BookingEntity;
-import com.justintime.cardetail.Model.Entity.CustomerEntity;
-import com.justintime.cardetail.Model.Entity.VehicleEntity;
-import com.justintime.cardetail.Model.Entity.VehicleInspectionEntity;
+import com.justintime.cardetail.Model.Entity.*;
 import com.justintime.cardetail.Repository.BookingRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -64,6 +61,11 @@ public class BookingService {
                 .city(bookingEntity.getCustomer().getCity())
                 .zip(bookingEntity.getCustomer().getZip())
                 .serviceType(bookingEntity.getVehicle().getServiceTypeId())
+                .addOns(bookingEntity.getVehicle().getAddOnEntities() != null ?
+                        bookingEntity.getVehicle().getAddOnEntities().stream()
+                                .map(AddOnEntity::getAddOnId)
+                                .filter(Objects::nonNull)
+                                .collect(Collectors.toList()) : null)
                 .dateOfService(bookingEntity.getDateOfService() != null ?
                         new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(bookingEntity.getDateOfService()) : null)
                 .vehicleId(bookingEntity.getVehicle().getVehicleId())
@@ -71,12 +73,14 @@ public class BookingService {
                 .make(bookingEntity.getVehicle().getMake())
                 .model(bookingEntity.getVehicle().getModel())
                 .exteriorInspection(bookingEntity.getVehicle().getVehicleInspectionEntity() != null ?
-                    bookingEntity.getVehicle().getVehicleInspectionEntity().stream().map(
-                            VehicleInspectionEntity::getExternalInspectionValueTypeId).filter(Objects::nonNull)
+                    bookingEntity.getVehicle().getVehicleInspectionEntity().stream()
+                            .map(VehicleInspectionEntity::getExternalInspectionValueTypeId)
+                            .filter(Objects::nonNull)
                             .collect(Collectors.toList()) : null)
                 .interiorInspection(bookingEntity.getVehicle().getVehicleInspectionEntity() != null ?
-                        bookingEntity.getVehicle().getVehicleInspectionEntity().stream().map(
-                                VehicleInspectionEntity::getInternalInspectionValueTypeId).filter(Objects::nonNull)
+                        bookingEntity.getVehicle().getVehicleInspectionEntity().stream()
+                                .map(VehicleInspectionEntity::getInternalInspectionValueTypeId)
+                                .filter(Objects::nonNull)
                                 .collect(Collectors.toList()) : null)
                 .build()).collect(Collectors.toList());
     }

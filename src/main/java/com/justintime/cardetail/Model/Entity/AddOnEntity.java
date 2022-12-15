@@ -8,8 +8,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -20,41 +18,25 @@ import java.util.UUID;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-@Table(name = "vehicle")
-public class VehicleEntity {
+@Table(name = "add_ons")
+public class AddOnEntity {
 
     @Id
     @GenericGenerator(name = "generator", strategy ="uuid2")
     @GeneratedValue(generator = "generator")
     @Type(type="pg-uuid")
     @Column(columnDefinition = "uniqueidentifier")
-    private UUID vehicleId;
+    private UUID vehicleAddOnId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customerId", nullable = false)
-    private CustomerEntity customerEntity;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vehicleId", nullable = false)
+    private VehicleEntity vehicle;
 
-    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
-    private List<VehicleInspectionEntity> vehicleInspectionEntity;
-
-    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
-    private List<AddOnEntity> addOnEntities;
-
-    private int serviceTypeId;
-
-    private String make;
-
-    private String model;
-
-    private int year;
-
-    @OneToMany(mappedBy="vehicle")
-    List<BookingEntity> bookings;
+    private String addOnId;
 
     @CreationTimestamp
     private Timestamp createdAt;
 
     @UpdateTimestamp
     private Timestamp updatedAt;
-
 }

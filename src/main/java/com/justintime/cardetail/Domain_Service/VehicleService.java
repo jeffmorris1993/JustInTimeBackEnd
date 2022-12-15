@@ -1,5 +1,6 @@
 package com.justintime.cardetail.Domain_Service;
 
+import com.justintime.cardetail.Model.Entity.AddOnEntity;
 import com.justintime.cardetail.Model.Entity.CustomerEntity;
 import com.justintime.cardetail.Model.Entity.VehicleEntity;
 import com.justintime.cardetail.Model.Entity.VehicleInspectionEntity;
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -26,6 +28,8 @@ public class VehicleService {
                 .customerEntity(customerEntity)
                 .build();
         setInspection(vehicle.getVehicleInspection(), vehicleEntity);
+        setAddOns(vehicle.getAddOns(), vehicleEntity);
+
         return vehicleRepository.save(vehicleEntity);
     }
 
@@ -41,8 +45,17 @@ public class VehicleService {
                     .customerEntity(customerEntity)
                     .build();
             setInspection(vehicle.getVehicleInspection(), updatedVehicleEntity);
+            setAddOns(vehicle.getAddOns(), updatedVehicleEntity);
             return vehicleRepository.save(updatedVehicleEntity);
         }).orElse(null);
+    }
+
+    private void setAddOns(List<String> addOns, VehicleEntity vehicleEntity){
+        List<AddOnEntity> addOnEntities = addOns.stream().map(addOn -> AddOnEntity.builder()
+                .addOnId(addOn)
+                .vehicle(vehicleEntity)
+                .build()).collect(Collectors.toList());
+        vehicleEntity.setAddOnEntities(addOnEntities);
     }
 
     private void setInspection(VehicleInspection vehicleInspection, VehicleEntity vehicleEntity) {

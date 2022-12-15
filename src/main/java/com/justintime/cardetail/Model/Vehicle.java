@@ -2,6 +2,7 @@ package com.justintime.cardetail.Model;
 
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -15,5 +16,6 @@ public class Vehicle {
     private String model;
     private int year;
     private int serviceType;
+    private List<String> addOns;
     private VehicleInspection vehicleInspection;
 }
