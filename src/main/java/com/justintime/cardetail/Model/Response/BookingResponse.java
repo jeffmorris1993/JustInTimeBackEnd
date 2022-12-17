@@ -1,7 +1,8 @@
-package com.justintime.cardetail.Model;
+package com.justintime.cardetail.Model.Response;
 
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,4 +31,7 @@ public class BookingResponse {
     private String model;
     private List<String> exteriorInspection;
     private List<String> interiorInspection;
+    private BigDecimal baseCost;
+    private BigDecimal totalCost;
+    private BigDecimal tip;
 }

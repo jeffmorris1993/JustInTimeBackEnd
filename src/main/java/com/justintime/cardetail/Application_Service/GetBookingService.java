@@ -1,7 +1,7 @@
 package com.justintime.cardetail.Application_Service;
 
 import com.justintime.cardetail.Domain_Service.BookingService;
-import com.justintime.cardetail.Model.BookingResponse;
+import com.justintime.cardetail.Model.Response.BookingResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;

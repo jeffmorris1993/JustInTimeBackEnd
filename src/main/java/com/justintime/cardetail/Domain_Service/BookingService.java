@@ -1,18 +1,19 @@
 package com.justintime.cardetail.Domain_Service;
 
 import com.justintime.cardetail.Model.BookingInformation;
-import com.justintime.cardetail.Model.BookingResponse;
+import com.justintime.cardetail.Model.Mapper.BookingResponseMapper;
+import com.justintime.cardetail.Model.Response.BookingResponse;
 import com.justintime.cardetail.Model.Entity.*;
 import com.justintime.cardetail.Repository.BookingRepository;
+import com.justintime.cardetail.Util.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,8 +23,9 @@ public class BookingService {
     private final CustomerService customerService;
     private final VehicleService vehicleService;
     private final BookingRepository bookingRepository;
+    private final BookingResponseMapper bookingResponseMapper;
 
-    public UUID upsertBooking(BookingInformation bookingInformation) {
+    public BookingResponse upsertBooking(BookingInformation bookingInformation) {
         CustomerEntity customerEntity = bookingInformation.getCustomer().getCustomerId() != null ?
                 customerService.updateCustomer(bookingInformation.getCustomer()) :
                 customerService.createCustomer(bookingInformation.getCustomer());
@@ -41,47 +43,40 @@ public class BookingService {
                 .customer(customerEntity)
                 .vehicle(vehicleEntity)
                 .isSubmitted(bookingInformation.isSubmitted())
+                .baseCost(calculateBaseCost(vehicleEntity.getModel(), bookingInformation.getVehicle().getServiceType(),
+                        bookingInformation.getVehicle().getAddOns()))
                 .build()
         );
-        return newBooking.getBookingNumber();
+        return bookingResponseMapper.convertToBookingResponse(newBooking);
     }
 
     @Transactional
     public List<BookingResponse> getBookings(){
         List<BookingEntity> bookingEntities = bookingRepository.findAll();
-        return bookingEntities.stream().map(bookingEntity -> BookingResponse.builder()
-                .bookingNumber(bookingEntity.getBookingNumber())
-                .isSubmitted(bookingEntity.isSubmitted())
-                .customerId(bookingEntity.getCustomer().getCustomerId())
-                .firstName(bookingEntity.getCustomer().getFirstName())
-                .lastName(bookingEntity.getCustomer().getLastName())
-                .email(bookingEntity.getCustomer().getEmail())
-                .phone(bookingEntity.getCustomer().getPhone())
-                .address(bookingEntity.getCustomer().getStreetAddress())
-                .city(bookingEntity.getCustomer().getCity())
-                .zip(bookingEntity.getCustomer().getZip())
-                .serviceType(bookingEntity.getVehicle().getServiceTypeId())
-                .addOns(bookingEntity.getVehicle().getAddOnEntities() != null ?
-                        bookingEntity.getVehicle().getAddOnEntities().stream()
-                                .map(AddOnEntity::getAddOnId)
-                                .filter(Objects::nonNull)
-                                .collect(Collectors.toList()) : null)
-                .dateOfService(bookingEntity.getDateOfService() != null ?
-                        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(bookingEntity.getDateOfService()) : null)
-                .vehicleId(bookingEntity.getVehicle().getVehicleId())
-                .year(bookingEntity.getVehicle().getYear())
-                .make(bookingEntity.getVehicle().getMake())
-                .model(bookingEntity.getVehicle().getModel())
-                .exteriorInspection(bookingEntity.getVehicle().getVehicleInspectionEntity() != null ?
-                    bookingEntity.getVehicle().getVehicleInspectionEntity().stream()
-                            .map(VehicleInspectionEntity::getExternalInspectionValueTypeId)
-                            .filter(Objects::nonNull)
-                            .collect(Collectors.toList()) : null)
-                .interiorInspection(bookingEntity.getVehicle().getVehicleInspectionEntity() != null ?
-                        bookingEntity.getVehicle().getVehicleInspectionEntity().stream()
-                                .map(VehicleInspectionEntity::getInternalInspectionValueTypeId)
-                                .filter(Objects::nonNull)
-                                .collect(Collectors.toList()) : null)
-                .build()).collect(Collectors.toList());
+        return bookingEntities.stream()
+                .map(bookingResponseMapper::convertToBookingResponse)
+                .collect(Collectors.toList());
+    }
+
+    private BigDecimal calculateBaseCost(String model, int serviceType, List<String> addOns) {
+        BigDecimal totalCost = BigDecimal.ZERO;
+        boolean isCarOrSUV = model.toLowerCase().contains("car") || model.toLowerCase().contains("suv");
+        boolean isTruckOrVan = model.toLowerCase().contains("truck") || model.toLowerCase().contains("van");
+        if (isCarOrSUV) {
+            totalCost = totalCost.add(Constants.ServiceType.getCarSUVCost(serviceType));
+        }
+        else if (isTruckOrVan) {
+            totalCost = totalCost.add(Constants.ServiceType.getTruckVanCost(serviceType));
+        }
+        for (String addOn : addOns) {
+            if (isCarOrSUV) {
+                totalCost = totalCost.add(Constants.AddOnType.valueOf(addOn).getCarSUVCost());
+            }
+            else if (isTruckOrVan) {
+                totalCost = totalCost.add(Constants.AddOnType.valueOf(addOn).getTruckVanCost());
+            }
+        }
+        totalCost = totalCost.setScale(2, RoundingMode.HALF_UP);
+        return totalCost;
     }
 }

@@ -7,6 +7,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.UUID;
 
@@ -39,6 +40,12 @@ public class BookingEntity {
     private Timestamp dateOfService;
 
     private boolean isSubmitted;
+
+    private BigDecimal baseCost;
+
+    private BigDecimal totalCost;
+
+    private BigDecimal tip;
 
     @CreationTimestamp
     private Timestamp createdAt;
