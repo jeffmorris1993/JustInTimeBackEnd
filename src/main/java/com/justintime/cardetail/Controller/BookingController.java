@@ -1,32 +1,36 @@
 package com.justintime.cardetail.Controller;
 
-import com.justintime.cardetail.Application_Service.GetBookingService;
-import com.justintime.cardetail.Application_Service.UpsertBookingService;
+import com.justintime.cardetail.Application_Service.BookingApplicationService;
 import com.justintime.cardetail.Model.BookingInformation;
+import com.justintime.cardetail.Model.CostInformation;
 import com.justintime.cardetail.Model.Response.BookingResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
 @CrossOrigin
 @RestController
 @AllArgsConstructor
 public class BookingController {
 
-    private final UpsertBookingService upsertBookingService;
-    private final GetBookingService getBookingService;
+    private final BookingApplicationService bookingApplicationService;
 
     @PostMapping("/booking")
     public ResponseEntity<BookingResponse> upsertBooking(@RequestBody BookingInformation bookingInformation) {
-        return ResponseEntity.ok(upsertBookingService.run(bookingInformation));
+        return ResponseEntity.ok(bookingApplicationService.upsertBooking(bookingInformation));
     }
 
     @GetMapping("/booking")
     public ResponseEntity<List<BookingResponse>> getBookings() {
-        return ResponseEntity.ok(getBookingService.run());
+        return ResponseEntity.ok(bookingApplicationService.getBookings());
+    }
+
+    @PostMapping("/totalCost")
+    public ResponseEntity<BigDecimal> calculateTotalCost(@RequestBody CostInformation costInformation) {
+        return ResponseEntity.ok(bookingApplicationService.calculateCost(costInformation));
     }
 
 }

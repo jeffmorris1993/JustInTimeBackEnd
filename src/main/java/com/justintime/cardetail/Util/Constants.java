@@ -18,7 +18,7 @@ public class Constants {
         PEP("J.I.T PET PACKAGE (INTERIOR ONLY)", 7, new BigDecimal(60), new BigDecimal(60)),
         LSR("J.I.T LIGHT SWIRL REMOVER + WAX PACKAGE (EXTERIOR)",8, new BigDecimal(245), new BigDecimal(275)),
         FS("J.I.T Fleet Service", 9, new BigDecimal(100), new BigDecimal(100)),
-        WWSP("J.I.T WASH & WAX (Speciality Paint)", 9, new BigDecimal(50), new BigDecimal(100));
+        WWSP("J.I.T WASH & WAX (Speciality Paint)", 10, new BigDecimal(50), new BigDecimal(100));
 
         private static final Map<String, ServiceType> BY_LABEL = new HashMap<>();
         private static final Map<Integer, ServiceType> BY_ID = new HashMap<>();

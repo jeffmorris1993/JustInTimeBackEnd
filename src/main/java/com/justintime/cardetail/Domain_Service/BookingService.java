@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,6 +56,19 @@ public class BookingService {
         return bookingEntities.stream()
                 .map(bookingResponseMapper::convertToBookingResponse)
                 .collect(Collectors.toList());
+    }
+
+    public BigDecimal calculateTotalCost(UUID bookingNumber, BigDecimal tip){
+        Optional<BookingEntity> optionalBookingEntity = bookingRepository.findById(bookingNumber);
+        return optionalBookingEntity.map(bookingEntity -> {
+            BigDecimal cost = BigDecimal.ZERO
+                    .add(bookingEntity.getBaseCost())
+                    .add(tip);
+            bookingEntity.setTotalCost(cost);
+            bookingEntity.setTip(tip);
+            bookingRepository.save(bookingEntity);
+            return cost;
+        }).orElse(BigDecimal.ZERO);
     }
 
     private BigDecimal calculateBaseCost(String model, int serviceType, List<String> addOns) {
