@@ -56,6 +56,8 @@ public class BookingResponseMapper {
                .baseCost(bookingEntity.getBaseCost())
                .totalCost(bookingEntity.getTotalCost())
                .tip(bookingEntity.getTip())
+               .notes(bookingEntity.getNotes())
+               .serviceProviders(bookingEntity.getServiceProviders())
                .build();
 
    }

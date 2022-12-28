@@ -34,4 +34,6 @@ public class BookingResponse {
     private BigDecimal baseCost;
     private BigDecimal totalCost;
     private BigDecimal tip;
+    private String notes;
+    private String serviceProviders;
 }

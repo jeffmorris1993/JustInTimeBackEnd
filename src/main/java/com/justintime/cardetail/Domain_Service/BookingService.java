@@ -76,8 +76,11 @@ public class BookingService {
     @Transactional
     public void sendEmail(EmailInformation emailInformation) {
         Optional<BookingEntity> optionalBookingEntity = bookingRepository.findById(emailInformation.getBookingNumber());
-        optionalBookingEntity.ifPresent(bookingEntity ->
-                emailService.sendEmail(bookingEntity, emailInformation.getNotes(), emailInformation.getServiceProviders()));
+        optionalBookingEntity.ifPresent(bookingEntity -> {
+            emailService.sendEmail(bookingEntity, emailInformation.getNotes(), emailInformation.getServiceProviders());
+            bookingEntity.setNotes(emailInformation.getNotes());
+            bookingEntity.setServiceProviders(emailInformation.getServiceProviders().toString());
+        });
     }
 
     private BigDecimal calculateBaseCost(String model, int serviceType, List<String> addOns) {

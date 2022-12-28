@@ -47,6 +47,10 @@ public class BookingEntity {
 
     private BigDecimal tip;
 
+    private String notes;
+
+    private String serviceProviders;
+
     @CreationTimestamp
     private Timestamp createdAt;
 
