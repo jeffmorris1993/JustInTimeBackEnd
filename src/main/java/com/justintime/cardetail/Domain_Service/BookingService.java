@@ -1,11 +1,13 @@
 package com.justintime.cardetail.Domain_Service;
 
-import com.justintime.cardetail.Model.BookingInformation;
+import com.justintime.cardetail.Model.RequestBody.BookingInformation;
 import com.justintime.cardetail.Model.Mapper.BookingResponseMapper;
+import com.justintime.cardetail.Model.RequestBody.EmailInformation;
 import com.justintime.cardetail.Model.Response.BookingResponse;
 import com.justintime.cardetail.Model.Entity.*;
 import com.justintime.cardetail.Repository.BookingRepository;
 import com.justintime.cardetail.Util.Constants;
+import com.justintime.cardetail.Util.EmailService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +15,6 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +25,7 @@ public class BookingService {
     private final VehicleService vehicleService;
     private final BookingRepository bookingRepository;
     private final BookingResponseMapper bookingResponseMapper;
+    private final EmailService emailService;
 
     public BookingResponse upsertBooking(BookingInformation bookingInformation) {
         CustomerEntity customerEntity = bookingInformation.getCustomer().getCustomerId() != null ?
@@ -69,6 +71,13 @@ public class BookingService {
             bookingRepository.save(bookingEntity);
             return cost;
         }).orElse(BigDecimal.ZERO);
+    }
+
+    @Transactional
+    public void sendEmail(EmailInformation emailInformation) {
+        Optional<BookingEntity> optionalBookingEntity = bookingRepository.findById(emailInformation.getBookingNumber());
+        optionalBookingEntity.ifPresent(bookingEntity ->
+                emailService.sendEmail(bookingEntity, emailInformation.getNotes(), emailInformation.getServiceProviders()));
     }
 
     private BigDecimal calculateBaseCost(String model, int serviceType, List<String> addOns) {

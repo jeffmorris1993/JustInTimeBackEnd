@@ -1,4 +1,4 @@
-package com.justintime.cardetail.Model;
+package com.justintime.cardetail.Model.RequestBody;
 
 import lombok.*;
 

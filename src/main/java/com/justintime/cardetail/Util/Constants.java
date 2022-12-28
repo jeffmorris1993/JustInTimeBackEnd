@@ -8,6 +8,7 @@ import java.util.Map;
 
 public class Constants {
 
+    @Getter
     public enum ServiceType {
         CSR("Choose Service Requested", 1, BigDecimal.ZERO, BigDecimal.ZERO),
         WWE("J.I.T WASH & WAX (EXTERIOR ONLY)", 2, new BigDecimal(50), new BigDecimal(100)),
@@ -57,31 +58,33 @@ public class Constants {
 
     @Getter
     public enum AddOnType {
-        WA(new BigDecimal(50), new BigDecimal(100)),
-        VD(new BigDecimal(30), new BigDecimal(30)),
-        LC(new BigDecimal(30), new BigDecimal(30)),
-        FSC(new BigDecimal(40), new BigDecimal(40)),
-        UVPA(new BigDecimal(30), new BigDecimal(30)),
-        FMS(new BigDecimal(50), new BigDecimal(50)),
-        PHR(new BigDecimal(60), new BigDecimal(60)),
-        CBT(new BigDecimal(50), new BigDecimal(100)),
-        DV(new BigDecimal(25), new BigDecimal(50)),
-        GT(new BigDecimal(20), new BigDecimal(20)),
-        TDA(new BigDecimal(20), new BigDecimal(20)),
-        OED(new BigDecimal(50), new BigDecimal(50)),
-        SR(new BigDecimal(40), new BigDecimal(40)),
-        HR(new BigDecimal(20), new BigDecimal(20)),
-        HWSR(new BigDecimal(20), new BigDecimal(20)),
-        TMR(new BigDecimal(20), new BigDecimal(20)),
-        CS(new BigDecimal(125), new BigDecimal(125)),
-        CCS(new BigDecimal(795), new BigDecimal(795));
+        WA(new BigDecimal(50), new BigDecimal(100), "Wax Application (wash included)"),
+        VD(new BigDecimal(30), new BigDecimal(30), "Vinyl Dressing"),
+        LC(new BigDecimal(30), new BigDecimal(30), "Leather Conditioning"),
+        FSC(new BigDecimal(40), new BigDecimal(40), "Fabric Steam Cleaning"),
+        UVPA(new BigDecimal(30), new BigDecimal(30), "UV Protectant Application"),
+        FMS(new BigDecimal(50), new BigDecimal(50), "Fabric and Mat Shampooing"),
+        PHR(new BigDecimal(60), new BigDecimal(60), "Pet Hair Removal"),
+        CBT(new BigDecimal(50), new BigDecimal(100), "Clay Bar Treatment (wash included)"),
+        DV(new BigDecimal(25), new BigDecimal(50), "Deep Vacuuming"),
+        GT(new BigDecimal(20), new BigDecimal(20), "Glass Treatment"),
+        TDA(new BigDecimal(20), new BigDecimal(20), "Tire Dressing Application"),
+        OED(new BigDecimal(50), new BigDecimal(50), "Odor Elimination/Deodorizer (2hr Process)"),
+        SR(new BigDecimal(40), new BigDecimal(40), "Stain Removal"),
+        HR(new BigDecimal(20), new BigDecimal(20), "Headlight Restoration"),
+        HWSR(new BigDecimal(20), new BigDecimal(20), "Hard Water Spot Removal"),
+        TMR(new BigDecimal(20), new BigDecimal(20), "Trim & Molding Restoration"),
+        CS(new BigDecimal(125), new BigDecimal(125), "COVID-19 Sanitation"),
+        CCS(new BigDecimal(795), new BigDecimal(795), "Ceramic Coating Service");
 
         private final BigDecimal carSUVCost;
         private final BigDecimal truckVanCost;
+        private final String label;
 
-        AddOnType(BigDecimal carSUVCost, BigDecimal truckVanCost) {
+        AddOnType(BigDecimal carSUVCost, BigDecimal truckVanCost, String label) {
             this.carSUVCost = carSUVCost;
             this.truckVanCost = truckVanCost;
+            this.label = label;
         }
     }
 }

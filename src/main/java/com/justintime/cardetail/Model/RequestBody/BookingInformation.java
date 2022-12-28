@@ -1,6 +1,8 @@
-package com.justintime.cardetail.Model;
+package com.justintime.cardetail.Model.RequestBody;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.justintime.cardetail.Model.Customer;
+import com.justintime.cardetail.Model.Vehicle;
 import lombok.*;
 
 import java.sql.Timestamp;

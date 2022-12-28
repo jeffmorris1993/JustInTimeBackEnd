@@ -1,8 +1,9 @@
 package com.justintime.cardetail.Application_Service;
 
 import com.justintime.cardetail.Domain_Service.BookingService;
-import com.justintime.cardetail.Model.BookingInformation;
-import com.justintime.cardetail.Model.CostInformation;
+import com.justintime.cardetail.Model.RequestBody.BookingInformation;
+import com.justintime.cardetail.Model.RequestBody.CostInformation;
+import com.justintime.cardetail.Model.RequestBody.EmailInformation;
 import com.justintime.cardetail.Model.Response.BookingResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,5 +34,9 @@ public class BookingApplicationService {
 
     public BigDecimal calculateCost(CostInformation costInformation) {
         return bookingService.calculateTotalCost(costInformation.getBookingNumber(), costInformation.getTip());
+    }
+
+    public void sendEmail(EmailInformation emailInformation) {
+        bookingService.sendEmail(emailInformation);
     }
 }

@@ -1,8 +1,9 @@
 package com.justintime.cardetail.Controller;
 
 import com.justintime.cardetail.Application_Service.BookingApplicationService;
-import com.justintime.cardetail.Model.BookingInformation;
-import com.justintime.cardetail.Model.CostInformation;
+import com.justintime.cardetail.Model.RequestBody.BookingInformation;
+import com.justintime.cardetail.Model.RequestBody.CostInformation;
+import com.justintime.cardetail.Model.RequestBody.EmailInformation;
 import com.justintime.cardetail.Model.Response.BookingResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,12 @@ public class BookingController {
     @PostMapping("/totalCost")
     public ResponseEntity<BigDecimal> calculateTotalCost(@RequestBody CostInformation costInformation) {
         return ResponseEntity.ok(bookingApplicationService.calculateCost(costInformation));
+    }
+
+    @PostMapping("/email")
+    public ResponseEntity<String> sendEmail(@RequestBody EmailInformation emailInformation) {
+        bookingApplicationService.sendEmail(emailInformation);
+        return ResponseEntity.ok("okay");
     }
 
 }
