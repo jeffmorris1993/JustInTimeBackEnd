@@ -1,1 +1,43 @@
-
+spring:
+  flyway:
+    clean-on-validation-error: true
+    enabled: true
+    schemas: prod
+    placeholders:
+      db.prefix: prod
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql:///postgres
+    username: postgres
+    password: athypeakarK4
+    hikari:
+      data-source-properties:
+        socketFactory: com.google.cloud.sql.postgres.SocketFactory
+        cloudSqlInstance: justintimecardetailingfrontend:us-central1:car-detail-db
+  sql:
+    init:
+      mode: never
+  jpa:
+    hibernate:
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
+      ddl-auto: none
+      properties:
+        legacy_limit_handler: true
+    show-sql: true
+    properties:
+      hibernate:
+        default_schema: prod
+        format_sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "morrisjeffjr1993@gmail.com"
+    password: "awlqdryvehtmhocv"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
