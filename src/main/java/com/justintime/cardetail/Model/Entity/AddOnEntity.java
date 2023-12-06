@@ -7,6 +7,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.UUID;
 
@@ -33,6 +34,8 @@ public class AddOnEntity {
     private VehicleEntity vehicle;
 
     private String addOnId;
+
+    private BigDecimal cost;
 
     @CreationTimestamp
     private Timestamp createdAt;

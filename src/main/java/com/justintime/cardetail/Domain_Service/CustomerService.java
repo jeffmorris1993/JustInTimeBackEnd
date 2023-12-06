@@ -14,8 +14,11 @@ public class CustomerService {
 
     private CustomerRepository customerRepository;
 
-    public CustomerEntity createCustomer(Customer customer){
-        return customerRepository.save(CustomerEntity.builder()
+    public CustomerEntity upsertCustomer(Customer customer){
+        Optional<CustomerEntity> customerEntity = customerRepository.findByEmail(customer.getEmail());
+        CustomerEntity.CustomerEntityBuilder customerEntityBuilder =
+                customerEntity.isPresent() ? customerEntity.get().toBuilder() : CustomerEntity.builder();
+        return customerRepository.save(customerEntityBuilder
                 .firstName(customer.getFirstName())
                 .lastName(customer.getLastName())
                 .email(customer.getEmail())
@@ -24,19 +27,5 @@ public class CustomerService {
                 .city(customer.getCity())
                 .zip(customer.getZipCode())
                 .build());
-    }
-
-    public CustomerEntity updateCustomer(Customer customer){
-        Optional<CustomerEntity> customerEntity = customerRepository.findById(customer.getCustomerId());
-        return customerEntity.map(c -> customerRepository.save(c.toBuilder()
-                .firstName(customer.getFirstName())
-                .lastName(customer.getLastName())
-                .email(customer.getEmail())
-                .phone(customer.getPhone())
-                .streetAddress(customer.getStreetAddress())
-                .city(customer.getCity())
-                .zip(customer.getZipCode())
-                .build()
-        )).orElse(null);
     }
 }

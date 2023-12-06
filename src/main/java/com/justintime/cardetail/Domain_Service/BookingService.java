@@ -28,13 +28,9 @@ public class BookingService {
     private final EmailService emailService;
 
     public BookingResponse upsertBooking(BookingInformation bookingInformation) {
-        CustomerEntity customerEntity = bookingInformation.getCustomer().getCustomerId() != null ?
-                customerService.updateCustomer(bookingInformation.getCustomer()) :
-                customerService.createCustomer(bookingInformation.getCustomer());
+        CustomerEntity customerEntity = customerService.upsertCustomer(bookingInformation.getCustomer());
 
-        VehicleEntity vehicleEntity = bookingInformation.getVehicle().getVehicleId() != null ?
-                vehicleService.updateVehicle(bookingInformation.getVehicle(), customerEntity) :
-                vehicleService.createVehicle(bookingInformation.getVehicle(), customerEntity);
+        VehicleEntity vehicleEntity = vehicleService.upsertVehicle(bookingInformation.getVehicle(), customerEntity);
 
         Optional<BookingEntity> bookingEntity = bookingInformation.getBookingNumber() != null ?
                 bookingRepository.findById(bookingInformation.getBookingNumber()) : Optional.empty();
@@ -45,8 +41,7 @@ public class BookingService {
                 .customer(customerEntity)
                 .vehicle(vehicleEntity)
                 .isSubmitted(bookingInformation.isSubmitted())
-                .baseCost(calculateBaseCost(vehicleEntity.getModel(), bookingInformation.getVehicle().getServiceType(),
-                        bookingInformation.getVehicle().getAddOns()))
+                .baseCost(calculateBaseCost(vehicleEntity.getCost(), vehicleEntity.getAddOnEntities()))
                 .build()
         );
         return bookingResponseMapper.convertToBookingResponse(newBooking);
@@ -83,25 +78,11 @@ public class BookingService {
         });
     }
 
-    private BigDecimal calculateBaseCost(String model, int serviceType, List<String> addOns) {
-        BigDecimal totalCost = BigDecimal.ZERO;
-        boolean isCarOrSUV = model.toLowerCase().contains("car") || model.toLowerCase().contains("suv");
-        boolean isTruckOrVan = model.toLowerCase().contains("truck") || model.toLowerCase().contains("van");
-        if (isCarOrSUV) {
-            totalCost = totalCost.add(Constants.ServiceType.getCarSUVCost(serviceType));
+    private BigDecimal calculateBaseCost(BigDecimal mainServiceCost, List<AddOnEntity> addOnEntities) {
+        BigDecimal totalCost = mainServiceCost;
+        for (AddOnEntity addOnEntity : addOnEntities) {
+            totalCost = totalCost.add(addOnEntity.getCost());
         }
-        else if (isTruckOrVan) {
-            totalCost = totalCost.add(Constants.ServiceType.getTruckVanCost(serviceType));
-        }
-        for (String addOn : addOns) {
-            if (isCarOrSUV) {
-                totalCost = totalCost.add(Constants.AddOnType.valueOf(addOn).getCarSUVCost());
-            }
-            else if (isTruckOrVan) {
-                totalCost = totalCost.add(Constants.AddOnType.valueOf(addOn).getTruckVanCost());
-            }
-        }
-        totalCost = totalCost.setScale(2, RoundingMode.HALF_UP);
         return totalCost;
     }
 }

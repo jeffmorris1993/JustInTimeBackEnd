@@ -7,6 +7,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,8 @@ public class VehicleEntity {
     private List<AddOnEntity> addOnEntities;
 
     private int serviceTypeId;
+
+    private BigDecimal cost;
 
     private String make;
 

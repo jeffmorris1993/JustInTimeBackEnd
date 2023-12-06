@@ -15,7 +15,7 @@ public class Vehicle {
     private String make;
     private String model;
     private int year;
-    private int serviceType;
-    private List<String> addOns;
+    private DetailService<Integer> mainService;
+    private List<DetailService<String>> addOns;
     private VehicleInspection vehicleInspection;
 }
