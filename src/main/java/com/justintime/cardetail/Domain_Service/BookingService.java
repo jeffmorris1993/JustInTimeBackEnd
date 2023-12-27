@@ -30,7 +30,7 @@ public class BookingService {
     public BookingResponse upsertBooking(BookingInformation bookingInformation) {
         CustomerEntity customerEntity = customerService.upsertCustomer(bookingInformation.getCustomer());
 
-        VehicleEntity vehicleEntity = vehicleService.upsertVehicle(bookingInformation.getVehicle(), customerEntity);
+        VehicleEntity vehicleEntity = vehicleService.upsertVehicle(bookingInformation.getVehicle(), customerEntity, bookingInformation.getDateOfService());
 
         Optional<BookingEntity> bookingEntity = bookingInformation.getBookingNumber() != null ?
                 bookingRepository.findById(bookingInformation.getBookingNumber()) : Optional.empty();

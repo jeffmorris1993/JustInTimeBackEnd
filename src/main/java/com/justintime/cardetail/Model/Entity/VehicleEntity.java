@@ -50,6 +50,7 @@ public class VehicleEntity {
     private String model;
 
     private int year;
+    private Timestamp dateOfService;
 
     @OneToMany(mappedBy="vehicle")
     List<BookingEntity> bookings;

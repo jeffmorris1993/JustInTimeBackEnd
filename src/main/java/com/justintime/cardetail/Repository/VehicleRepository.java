@@ -6,8 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.sql.Timestamp;
 
 @Repository
 public interface VehicleRepository extends JpaRepository<VehicleEntity, UUID> {
-    Optional<VehicleEntity> findByMakeAndModelAndYear(String make, String model, int year);
+    Optional<VehicleEntity> findByMakeAndModelAndYearAndDateOfService(String make, String model, int year, Timestamp dateOfService);
 }
