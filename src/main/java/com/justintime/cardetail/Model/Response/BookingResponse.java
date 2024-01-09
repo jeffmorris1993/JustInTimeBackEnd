@@ -12,6 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingResponse {
+
     private UUID bookingNumber;
     private boolean isSubmitted;
     private UUID customerId;
@@ -22,9 +23,9 @@ public class BookingResponse {
     private String address;
     private String city;
     private String zip;
-    private int serviceType;
+    private DetailServiceResponse detailServiceResponse;
+    private List<AddOnResponse> addOnResponses;
     private String dateOfService;
-    private List<String> addOns;
     private UUID vehicleId;
     private int year;
     private String make;
@@ -37,3 +38,4 @@ public class BookingResponse {
     private String notes;
     private String serviceProviders;
 }
+

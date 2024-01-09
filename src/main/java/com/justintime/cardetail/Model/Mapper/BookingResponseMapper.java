@@ -3,7 +3,9 @@ package com.justintime.cardetail.Model.Mapper;
 import com.justintime.cardetail.Model.Entity.AddOnEntity;
 import com.justintime.cardetail.Model.Entity.BookingEntity;
 import com.justintime.cardetail.Model.Entity.VehicleInspectionEntity;
+import com.justintime.cardetail.Model.Response.AddOnResponse;
 import com.justintime.cardetail.Model.Response.BookingResponse;
+import com.justintime.cardetail.Model.Response.DetailServiceResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,10 +33,18 @@ public class BookingResponseMapper {
                .address(bookingEntity.getCustomer().getStreetAddress())
                .city(bookingEntity.getCustomer().getCity())
                .zip(bookingEntity.getCustomer().getZip())
-               .serviceType(bookingEntity.getVehicle().getServiceTypeId())
-               .addOns(bookingEntity.getVehicle().getAddOnEntities() != null ?
+               .detailServiceResponse(DetailServiceResponse.builder()
+                       .serviceType(bookingEntity.getVehicle().getServiceTypeId())
+                       .serviceCost(bookingEntity.getVehicle().getCost())
+                       .build()
+               )
+               .addOnResponses(bookingEntity.getVehicle().getAddOnEntities() != null ?
                        bookingEntity.getVehicle().getAddOnEntities().stream()
-                               .map(AddOnEntity::getAddOnId)
+                               .map(addOnEntity -> AddOnResponse.builder()
+                                       .addOn(addOnEntity.getAddOnId())
+                                       .addOnCost(addOnEntity.getCost())
+                                       .build()
+                               )
                                .filter(Objects::nonNull)
                                .collect(Collectors.toList()) : null)
                .dateOfService(bookingEntity.getDateOfService() != null ?
