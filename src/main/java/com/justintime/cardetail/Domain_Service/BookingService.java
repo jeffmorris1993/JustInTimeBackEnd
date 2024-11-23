@@ -74,7 +74,7 @@ public class BookingService {
         optionalBookingEntity.ifPresent(bookingEntity -> {
             emailService.sendEmail(bookingEntity, emailInformation.getNotes(), emailInformation.getServiceProviders());
             bookingEntity.setNotes(emailInformation.getNotes());
-            bookingEntity.setServiceProviders(emailInformation.getServiceProviders().toString());
+            bookingEntity.setServiceProviders(String.join(",", emailInformation.getServiceProviders()));
         });
     }
 

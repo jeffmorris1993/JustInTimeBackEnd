@@ -47,7 +47,7 @@ public class EmailService {
         }
         content.append("Tip: $").append(bookingEntity.getTip()).append("\n");
         content.append("Total Cost: $").append(bookingEntity.getTotalCost()).append("\n");
-        content.append("Service Providers: ").append(serviceProviders.toString()).append("\n");
+        content.append("Service Providers: ").append(String.join(",", serviceProviders)).append("\n");
         content.append("Notes: ").append(notes);
         return content.toString();
     }
