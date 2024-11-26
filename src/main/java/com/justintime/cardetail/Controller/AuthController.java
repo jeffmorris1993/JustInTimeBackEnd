@@ -9,7 +9,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,6 +20,11 @@ public class AuthController {
     private JwtUtil jwtUtil;
 
     private AuthenticationManager authenticationManager;
+
+    @GetMapping("/login-required")
+    public ResponseEntity<String> loginRequired() {
+        return ResponseEntity.status(401).body("You need to log in again.");
+    }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserEntity user) {

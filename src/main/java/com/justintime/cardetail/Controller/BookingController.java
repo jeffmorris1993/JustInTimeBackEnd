@@ -7,6 +7,7 @@ import com.justintime.cardetail.Model.RequestBody.EmailInformation;
 import com.justintime.cardetail.Model.Response.BookingResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -24,6 +25,7 @@ public class BookingController {
         return ResponseEntity.ok(bookingApplicationService.upsertBooking(bookingInformation));
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/booking")
     public ResponseEntity<List<BookingResponse>> getBookings() {
         return ResponseEntity.ok(bookingApplicationService.getBookings());
