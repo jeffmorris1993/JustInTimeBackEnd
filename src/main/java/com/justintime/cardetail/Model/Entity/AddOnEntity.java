@@ -21,7 +21,7 @@ import java.util.UUID;
 public class AddOnEntity {
 
     @Id
-    private UUID vehicleAddOnId;
+    private long vehicleAddOnId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicleId", nullable = false)

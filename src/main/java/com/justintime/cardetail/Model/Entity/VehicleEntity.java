@@ -22,7 +22,7 @@ import java.util.UUID;
 public class VehicleEntity {
 
     @Id
-    private UUID vehicleId;
+    private long vehicleId;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customerId", nullable = false)

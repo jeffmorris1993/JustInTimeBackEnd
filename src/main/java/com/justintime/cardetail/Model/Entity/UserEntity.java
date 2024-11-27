@@ -23,7 +23,7 @@ import java.util.UUID;
 @Table(name = "user")
 public class UserEntity {
     @Id
-    private UUID id;
+    private long id;
 
     private String firstName;
     private String lastName;

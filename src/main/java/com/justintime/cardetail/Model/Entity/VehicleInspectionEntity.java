@@ -20,7 +20,7 @@ import java.util.UUID;
 public class VehicleInspectionEntity {
 
     @Id
-    private UUID vehicleInspectionId;
+    private long vehicleInspectionId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicleId", nullable = false)

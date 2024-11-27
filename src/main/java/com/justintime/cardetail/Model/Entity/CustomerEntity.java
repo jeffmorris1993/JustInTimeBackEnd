@@ -21,7 +21,7 @@ import java.util.UUID;
 public class CustomerEntity {
 
     @Id
-    private UUID customerId;
+    private long customerId;
 
     private String firstName;
 

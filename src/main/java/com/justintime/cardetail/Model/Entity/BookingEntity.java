@@ -21,7 +21,7 @@ import java.util.UUID;
 public class BookingEntity {
 
     @Id
-    private UUID bookingNumber;
+    private long bookingNumber;
 
     @ManyToOne
     @JoinColumn(name = "customerId")
