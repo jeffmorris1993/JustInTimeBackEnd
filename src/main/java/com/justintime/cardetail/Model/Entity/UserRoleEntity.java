@@ -2,9 +2,8 @@ package com.justintime.cardetail.Model.Entity;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.*;
-import javax.persistence.Table;
+import jakarta.persistence.*;
+
 
 @Entity
 @Getter

@@ -2,14 +2,11 @@ package com.justintime.cardetail.Model.Entity;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,10 +22,6 @@ import java.util.UUID;
 public class VehicleEntity {
 
     @Id
-    @GenericGenerator(name = "generator", strategy ="uuid2")
-    @GeneratedValue(generator = "generator")
-    @Type(type="pg-uuid")
-    @Column(columnDefinition = "uniqueidentifier")
     private UUID vehicleId;
 
     @OneToOne(fetch = FetchType.LAZY)

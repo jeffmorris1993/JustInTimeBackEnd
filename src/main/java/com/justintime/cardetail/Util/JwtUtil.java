@@ -23,7 +23,7 @@ public class JwtUtil {
     @Value("${jwt.cookieExpiry}")
     private int cookieExpiry;
 
-    public String extractUsername(String token) {
+    public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -37,22 +37,22 @@ public class JwtUtil {
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
+        final String username = extractEmail(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    public String GenerateToken(String username){
+    public String GenerateToken(String email){
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, username);
+        return createToken(claims, email);
     }
 
-    private String createToken(Map<String, Object> claims, String username) {
+    private String createToken(Map<String, Object> claims, String email) {
 
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + cookieExpiry*1000L);
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(username)
+                .setSubject(email)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(expiryDate)
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();

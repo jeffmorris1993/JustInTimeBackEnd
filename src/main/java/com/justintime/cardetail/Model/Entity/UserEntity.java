@@ -6,7 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,10 +23,6 @@ import java.util.UUID;
 @Table(name = "user")
 public class UserEntity {
     @Id
-    @GenericGenerator(name = "generator", strategy ="uuid2")
-    @GeneratedValue(generator = "generator")
-    @Type(type="pg-uuid")
-    @Column(columnDefinition = "uniqueidentifier")
     private UUID id;
 
     private String firstName;
