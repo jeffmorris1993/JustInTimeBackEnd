@@ -1,44 +1,53 @@
 package com.justintime.cardetail.Controller;
 
-import com.justintime.cardetail.Domain_Service.UserService;
-import com.justintime.cardetail.Model.Entity.UserEntity;
+import com.justintime.cardetail.Model.RequestBody.AuthRequest;
+import com.justintime.cardetail.Model.Response.AuthResponse;
 import com.justintime.cardetail.Util.JwtUtil;
-import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
-@AllArgsConstructor
+@RequestMapping("/api/v1")
 public class AuthController {
-    private UserService userService;
 
+    @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired
     private AuthenticationManager authenticationManager;
 
-    @GetMapping("/login-required")
-    public ResponseEntity<String> loginRequired() {
-        return ResponseEntity.status(401).body("You need to log in again.");
-    }
-
-    @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody UserEntity user) {
-        userService.saveUser(user);
-        return ResponseEntity.ok("User registered successfully");
-    }
+    @Value("${jwt.cookieExpiry}")
+    private int cookieExpiry;
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody UserEntity user) {
+    public AuthResponse AuthenticateAndGetToken(@RequestBody AuthRequest authRequestDTO, HttpServletResponse response){
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtUtil.generateToken(user.getEmail());
-        return ResponseEntity.ok(token);
+                new UsernamePasswordAuthenticationToken(authRequestDTO.getEmail(), authRequestDTO.getPassword()));
+        if(authentication.isAuthenticated()){
+            String accessToken = jwtUtil.GenerateToken(authRequestDTO.getEmail());
+            // set accessToken to cookie header
+            ResponseCookie cookie = ResponseCookie.from("accessToken", accessToken)
+                    .httpOnly(true)
+                    .secure(false)
+                    .path("/")
+                    .maxAge(cookieExpiry)
+                    .build();
+            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+            return AuthResponse.builder()
+                    .accessToken(accessToken)
+                    .build();
+
+        } else {
+            throw new UsernameNotFoundException("invalid user request..!!");
+        }
+
     }
 }

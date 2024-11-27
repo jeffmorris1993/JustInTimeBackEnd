@@ -6,14 +6,12 @@ import com.justintime.cardetail.Model.RequestBody.EmailInformation;
 import com.justintime.cardetail.Model.Response.BookingResponse;
 import com.justintime.cardetail.Model.Entity.*;
 import com.justintime.cardetail.Repository.BookingRepository;
-import com.justintime.cardetail.Util.Constants;
 import com.justintime.cardetail.Util.EmailService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 

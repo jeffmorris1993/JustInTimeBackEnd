@@ -1,40 +1,73 @@
 package com.justintime.cardetail.Domain_Service;
 
 import com.justintime.cardetail.Model.Entity.UserEntity;
+import com.justintime.cardetail.Model.RequestBody.UserRequest;
+import com.justintime.cardetail.Model.Response.UserResponse;
 import com.justintime.cardetail.Repository.UserRepository;
-import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
-import java.util.ArrayList;
-
+import java.lang.reflect.Type;
+import java.util.List;
 
 @Service
-@AllArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserService {
 
-    private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    UserRepository userRepository;
 
-    public UserEntity saveUser(UserEntity userEntity) {
-        userEntity.setPassword(bCryptPasswordEncoder.encode(userEntity.getPassword()));
-        System.out.println("UserEntity: " + userEntity);
-        return userRepository.save(userEntity);
-    }
+    ModelMapper modelMapper = new ModelMapper();
 
-    public UserEntity findByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByEmail(email);
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found with email: " + email);
+    public UserResponse saveUser(UserRequest userRequest) {
+        if(userRequest.getEmail() == null){
+            throw new RuntimeException("Parameter email is not found in request..!!");
+        } else if(userRequest.getPassword() == null){
+            throw new RuntimeException("Parameter password is not found in request..!!");
         }
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), new ArrayList<>());
+
+        UserEntity savedUser = null;
+
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String rawPassword = userRequest.getPassword();
+        String encodedPassword = encoder.encode(rawPassword);
+
+        UserEntity user = modelMapper.map(userRequest, UserEntity.class);
+        user.setPassword(encodedPassword);
+        if(userRequest.getId() != null){
+            UserEntity oldUser = userRepository.findFirstById(userRequest.getId());
+            if(oldUser != null){
+                oldUser.setId(user.getId());
+                oldUser.setPassword(user.getPassword());
+                oldUser.setEmail(user.getEmail());
+                oldUser.setRoles(user.getRoles());
+
+                savedUser = userRepository.save(oldUser);
+            } else {
+                throw new RuntimeException("Can't find record with identifier: " + userRequest.getId());
+            }
+        } else {
+            savedUser = userRepository.save(user);
+        }
+        return modelMapper.map(savedUser, UserResponse.class);
+    }
+
+    public UserResponse getUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetail = (UserDetails) authentication.getPrincipal();
+        String usernameFromAccessToken = userDetail.getUsername();
+        UserEntity user = userRepository.findByEmail(usernameFromAccessToken);
+        return modelMapper.map(user, UserResponse.class);
+    }
+
+    public List<UserResponse> getAllUser() {
+        List<UserEntity> users = userRepository.findAll();
+        Type setOfDTOsType = new TypeToken<List<UserResponse>>(){}.getType();
+        return modelMapper.map(users, setOfDTOsType);
     }
 }
