@@ -8,6 +8,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -31,6 +33,9 @@ public class UserEntity {
     private String lastName;
     private String email;
     private String password;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<UserRoleEntity> roles = new HashSet<>();
 
     @CreationTimestamp
     private Timestamp createdAt;
