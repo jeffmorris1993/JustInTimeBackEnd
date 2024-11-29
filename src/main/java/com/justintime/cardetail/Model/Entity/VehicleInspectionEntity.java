@@ -2,6 +2,7 @@ package com.justintime.cardetail.Model.Entity;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.*;
@@ -20,7 +21,12 @@ import java.util.UUID;
 public class VehicleInspectionEntity {
 
     @Id
-    private long vehicleInspectionId;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    private UUID vehicleInspectionId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicleId", nullable = false)

@@ -3,6 +3,9 @@ package com.justintime.cardetail.Model.Entity;
 import lombok.*;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
+
+import java.util.UUID;
 
 
 @Entity
@@ -16,8 +19,11 @@ import jakarta.persistence.*;
 @Table(name = "role")
 public class UserRoleEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    private UUID id;
     private String name;
 }

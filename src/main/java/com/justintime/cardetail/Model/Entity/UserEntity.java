@@ -23,7 +23,12 @@ import java.util.UUID;
 @Table(name = "user")
 public class UserEntity {
     @Id
-    private long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    private UUID id;
 
     private String firstName;
     private String lastName;

@@ -18,7 +18,7 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
     // Need to make this stronger and store it securely
-    private String SECRET = "secret";
+    private String SECRET = "357638792F423F4428472B4B6250655368566D597133743677397A2443264629";
 
     @Value("${jwt.cookieExpiry}")
     private int cookieExpiry;

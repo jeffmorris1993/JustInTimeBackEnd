@@ -13,9 +13,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class BookingResponse {
 
-    private long bookingNumber;
+    private UUID bookingNumber;
     private boolean isSubmitted;
-    private long customerId;
+    private UUID customerId;
     private String firstName;
     private String lastName;
     private String phone;
@@ -26,7 +26,7 @@ public class BookingResponse {
     private DetailServiceResponse detailServiceResponse;
     private List<AddOnResponse> addOnResponses;
     private String dateOfService;
-    private long vehicleId;
+    private UUID vehicleId;
     private int year;
     private String make;
     private String model;

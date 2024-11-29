@@ -3,6 +3,7 @@ package com.justintime.cardetail.Model.Entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
@@ -21,7 +22,12 @@ import java.util.UUID;
 public class CustomerEntity {
 
     @Id
-    private long customerId;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    private UUID customerId;
 
     private String firstName;
 
