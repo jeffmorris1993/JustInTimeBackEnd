@@ -1,6 +1,7 @@
 package com.justintime.cardetail.Config;
 
 import com.justintime.cardetail.Util.JwtUtil;
+import com.justintime.cardetail.Util.TokenBlacklist;
 import com.justintime.cardetail.Util.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,6 +27,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
     UserDetailsServiceImpl userDetailsServiceImpl;
 
+    @Autowired
+    private TokenBlacklist tokenBlacklist;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -41,7 +45,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
         }
 
-        if(token == null){
+        if(token == null || tokenBlacklist.isTokenBlacklisted(token)){
             filterChain.doFilter(request, response);
             return;
         }
@@ -51,7 +55,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if(email != null){
             UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(email);
             if(jwtUtil.validateToken(token, userDetails)){
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                UsernamePasswordAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(userDetails, null,
+                                userDetails.getAuthorities());
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
