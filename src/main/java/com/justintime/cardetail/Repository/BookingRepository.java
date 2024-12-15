@@ -17,6 +17,9 @@ public interface BookingRepository extends JpaRepository<BookingEntity, UUID> {
     Page<BookingEntity> findByCustomerFirstNameOrLastNameContainingIgnoreCase(@Param("firstName") String firstName,
                                                                               @Param("lastName") String lastName,
                                                                               Pageable pageable);
-    Page<BookingEntity> findByDateOfService(Date dateOfService, Pageable pageable);
+
+    @Query("SELECT b FROM BookingEntity b WHERE b.dateOfService BETWEEN :startDate AND :endDate")
+    Page<BookingEntity> findByDateOfServiceBetween(@Param("startDate") Date startDate, @Param("endDate") Date endDate,
+                                            Pageable pageable);
     Page<BookingEntity> findByBookingNumber(UUID bookingNumber, Pageable pageable);
 }
