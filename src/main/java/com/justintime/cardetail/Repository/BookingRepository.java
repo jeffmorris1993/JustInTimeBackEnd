@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 public interface BookingRepository extends JpaRepository<BookingEntity, UUID> {
@@ -19,7 +19,7 @@ public interface BookingRepository extends JpaRepository<BookingEntity, UUID> {
                                                                               Pageable pageable);
 
     @Query("SELECT b FROM BookingEntity b WHERE b.dateOfService BETWEEN :startDate AND :endDate")
-    Page<BookingEntity> findByDateOfServiceBetween(@Param("startDate") Date startDate, @Param("endDate") Date endDate,
+    Page<BookingEntity> findByDateOfServiceBetween(@Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate,
                                             Pageable pageable);
     Page<BookingEntity> findByBookingNumber(UUID bookingNumber, Pageable pageable);
 }

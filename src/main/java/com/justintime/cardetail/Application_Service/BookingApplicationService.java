@@ -16,7 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @Service
@@ -36,9 +36,9 @@ public class BookingApplicationService {
     }
 
     public Page<BookingResponse> getBookings(Pageable pageable, UUID bookingNumber, String customerFirstName,
-                                             String customerLastName, Date dateOfService) {
+                                             String customerLastName, Timestamp startDate, Timestamp endDate) {
         Page<BookingEntity> bookingEntities = bookingService.getBookings(pageable, bookingNumber, customerFirstName,
-                customerLastName, dateOfService);
+                customerLastName, startDate, endDate);
         return bookingEntities.map(bookingResponseMapper::convertToBookingResponse);
     }
 
