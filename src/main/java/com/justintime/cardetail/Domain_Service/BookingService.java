@@ -25,9 +25,18 @@ public class BookingService {
     private final EmailService emailService;
 
     public BookingEntity upsertBooking(BookingInformation bookingInformation) {
-        CustomerEntity customerEntity = customerService.upsertCustomer(bookingInformation.getCustomer());
+        CustomerEntity customerEntity = null;
+        if (bookingInformation.getCustomer() != null) {
+            customerEntity = customerService.upsertCustomer(bookingInformation.getCustomer());
+        }
 
-        VehicleEntity vehicleEntity = vehicleService.upsertVehicle(bookingInformation.getVehicle(), customerEntity, bookingInformation.getDateOfService());
+        VehicleEntity vehicleEntity = null;
+        BigDecimal baseCost = BigDecimal.ZERO;
+        if (bookingInformation.getVehicle() != null) {
+            vehicleEntity = vehicleService.upsertVehicle(bookingInformation.getVehicle(), customerEntity,
+                    bookingInformation.getDateOfService());
+            baseCost = calculateBaseCost(vehicleEntity.getCost(), vehicleEntity.getAddOnEntities());
+        }
 
         Optional<BookingEntity> bookingEntity = bookingInformation.getBookingNumber() != null ?
                 bookingRepository.findById(bookingInformation.getBookingNumber()) : Optional.empty();
@@ -38,7 +47,7 @@ public class BookingService {
                 .customer(customerEntity)
                 .vehicle(vehicleEntity)
                 .isSubmitted(bookingInformation.isSubmitted())
-                .baseCost(calculateBaseCost(vehicleEntity.getCost(), vehicleEntity.getAddOnEntities()))
+                .baseCost(baseCost)
                 .build()
         );
     }
