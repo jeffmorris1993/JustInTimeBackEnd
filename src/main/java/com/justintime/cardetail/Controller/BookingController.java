@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -26,9 +27,16 @@ public class BookingController {
 
     private final BookingApplicationService bookingApplicationService;
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/booking")
     public ResponseEntity<BookingResponse> upsertBooking(@RequestBody BookingInformation bookingInformation) {
-        return ResponseEntity.ok(bookingApplicationService.upsertBooking(bookingInformation));
+        if (bookingInformation == null) {
+            throw new IllegalArgumentException("Booking information is required");        }
+        try {
+            return ResponseEntity.ok(bookingApplicationService.upsertBooking(bookingInformation));
+        } catch (Exception e) {
+            throw new RuntimeException("Internal Server Error: " + e.getMessage());
+        }
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -39,21 +47,35 @@ public class BookingController {
                                                              @RequestParam(required = false) String lastName,
                                                              @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime startDate,
                                                              @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime endDate) {
-        Timestamp startTimestamp = startDate != null ? Timestamp.from(startDate.toInstant()) : null;
-        Timestamp endTimestamp = endDate != null ? Timestamp.from(endDate.toInstant()) : null;
-        return ResponseEntity.ok(bookingApplicationService.getBookings(pageable, bookingNumber, firstName, lastName,
-                startTimestamp, endTimestamp));
+        try {
+            Timestamp startTimestamp = startDate != null ? Timestamp.from(startDate.toInstant()) : null;
+            Timestamp endTimestamp = endDate != null ? Timestamp.from(endDate.toInstant()) : null;
+            return ResponseEntity.ok(bookingApplicationService.getBookings(pageable, bookingNumber, firstName, lastName,
+                    startTimestamp, endTimestamp));
+        } catch (Exception e) {
+            throw new RuntimeException("Internal Server Error: " + e.getMessage());
+        }
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/totalCost")
     public ResponseEntity<BigDecimal> calculateTotalCost(@RequestBody CostInformation costInformation) {
-        return ResponseEntity.ok(bookingApplicationService.calculateCost(costInformation));
+        try {
+            return ResponseEntity.ok(bookingApplicationService.calculateCost(costInformation));
+        } catch (Exception e) {
+            throw new RuntimeException("Internal Server Error: " + e.getMessage());
+        }
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/email")
     public ResponseEntity<String> sendEmail(@RequestBody EmailInformation emailInformation) {
-        bookingApplicationService.sendEmail(emailInformation);
-        return ResponseEntity.ok("okay");
+        try {
+            bookingApplicationService.sendEmail(emailInformation);
+            return ResponseEntity.ok("okay");
+        } catch (Exception e) {
+            throw new RuntimeException("Internal Server Error: " + e.getMessage());
+        }
     }
 
 }
