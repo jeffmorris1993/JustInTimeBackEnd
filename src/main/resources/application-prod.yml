@@ -11,11 +11,11 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql:///postgres
     username: postgres
-    password: athypeakarK4
+    password: password
     hikari:
       data-source-properties:
         socketFactory: com.google.cloud.sql.postgres.SocketFactory
-        cloudSqlInstance: justintimecardetailingfrontend:us-central1:car-detail-db
+        cloudSqlInstance: justintimecardetailingfrontend:us-central1:car-details-db
   sql:
     init:
       mode: never
